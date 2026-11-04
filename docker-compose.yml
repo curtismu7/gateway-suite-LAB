@@ -1,0 +1,29 @@
+# OrbStack:  HOST_PORT=5750 docker compose up --build -d   ->  http://127.0.0.1:5750
+# The server binds 0.0.0.0 INSIDE the container (GWS_BIND is the opt-in), but the port is published on loopback only.
+# Do not change the 127.0.0.1 below. HOST_PORT must stay in 5750-5759.
+name: gateway-suite-LAB
+
+services:
+  gateway-suite-lab:
+    build: .
+    ports:
+      - "127.0.0.1:${HOST_PORT:-5750}:5750"
+    environment:
+      PORT: "5750"
+      GWS_BIND: 0.0.0.0
+      LAB_ALLOWED_HOSTS: ${LAB_ALLOWED_HOSTS:-}
+    env_file:
+      - path: ${STANDALONE_ENV:-/Users/cmuir/Development/.env}
+        required: false
+    extra_hosts:
+      - "local.ping-devops.com:host-gateway"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5750/api/health').then(r=>r.json()).then(j=>process.exit(j.schema==='demo-health/1'&&j.state==='ready'?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      start_period: 5s
+      start_interval: 2s
+      timeout: 5s
+      retries: 3

@@ -1,0 +1,29 @@
+{
+  "name": "gateway-suite-LAB",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Gateway Suite LAB: an agent chat relayed Main Agent -> AI Gateway (A2A) -> Worker Agent -> AI Gateway (MCP) -> MCP tool -> LLM, with preset prompt categories, AI Guard blocks and a Personal Agent tab for remote MCP servers. Mock mode is fully in-process; Real mode calls the configured central A2A agent.",
+  "license": "MIT",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "start": "npm start -w server",
+    "dev": "npm run dev -w server",
+    "build": "npm run build -w web",
+    "test": "npm test -w server && npm test -w web",
+    "doctor": "node scripts/doctor.mjs",
+    "reset": "node scripts/reset.mjs",
+    "content-pack": "node scripts/build-content-pack.mjs && node scripts/validate-content-pack.mjs",
+    "talk-track": "node scripts/build-talk-track.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  }
+}

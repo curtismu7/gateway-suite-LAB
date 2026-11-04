@@ -1,0 +1,34 @@
+{
+  "schema": "diagram-studio/1",
+  "id": "gateway-e2e",
+  "title": "End to End: one prompt through two gateways",
+  "lede": "A prompt is relayed Main Agent -> AI Gateway (A2A) -> Worker Agent -> AI Gateway (MCP) -> MCP tool -> LLM. AI Guard can stop it at a gateway.",
+  "groups": {
+    "main": { "label": "Main Agent (concierge)", "color": "blue" },
+    "gw-a2a": { "label": "AI Gateway (A2A traffic)", "color": "red" },
+    "worker": { "label": "Worker Agent (analyst)", "color": "grey" },
+    "gw-mcp": { "label": "AI Gateway (MCP traffic)", "color": "red" },
+    "tool": { "label": "MCP + LLM", "color": "dark" }
+  },
+  "nodes": [
+    { "id": "main", "group": "main", "label": "Main Agent", "sub": ["concierge", "relays the prompt"], "x": 0, "y": 0 },
+    { "id": "gw-a2a", "group": "gw-a2a", "label": "AI Gateway", "sub": ["A2A traffic", "AI Guard"], "x": 3, "y": 0 },
+    { "id": "worker", "group": "worker", "label": "Worker Agent", "sub": ["analyst", "plans tool calls"], "x": 6, "y": 0 },
+    { "id": "gw-mcp", "group": "gw-mcp", "label": "AI Gateway", "sub": ["MCP traffic", "AI Guard"], "x": 9, "y": 0 },
+    { "id": "mcp", "group": "tool", "label": "MCP tool", "sub": ["access governance data"], "x": 12, "y": 0 },
+    { "id": "llm", "group": "tool", "label": "LLM", "sub": ["drafts the answer"], "x": 12, "y": 3 }
+  ],
+  "edges": [
+    { "id": "e1", "from": "main", "to": "gw-a2a", "label": "A2A message/send", "color": "blue" },
+    { "id": "e2", "from": "gw-a2a", "to": "worker", "label": "A2A handoff", "color": "blue" },
+    { "id": "e3", "from": "worker", "to": "gw-mcp", "label": "tools/call", "color": "blue" },
+    { "id": "e4", "from": "gw-mcp", "to": "mcp", "label": "MCP", "color": "green" },
+    { "id": "e5", "from": "mcp", "to": "llm", "label": "results", "color": "green" }
+  ],
+  "paths": [
+    { "id": "path-main-llm", "label": "Main Agent LLM route", "hops": ["main"] },
+    { "id": "path-delegate", "label": "A2A delegation", "hops": ["main", "gw-a2a", "worker"] },
+    { "id": "path-worker-mcp", "label": "Worker MCP route", "hops": ["worker", "gw-mcp", "mcp"] },
+    { "id": "path-worker-llm", "label": "Worker LLM route", "hops": ["mcp", "llm"] }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "demos": [
+    {
+      "id": "gateway-suite-LAB",
+      "name": "AI Gateway Suite LAB",
+      "catalogId": "D-",
+      "kind": "Demo",
+      "description": "A relayed agent chat: preset prompts (access review, prompt injection, jailbreak, exfiltration, PII, tool misuse, malicious content, inter-agent abuse) travel Main Agent -> AI Gateway (A2A) -> Worker Agent -> AI Gateway (MCP) -> MCP tool -> LLM on a movable ReactFlow diagram, with a per-hop trace and AI Guard blocks; a Personal Agent tab connects to a remote MCP server, lists tools and calls them. Mock mode is fully in-process; Real mode calls the configured central A2A agent.",
+      "url": "http://localhost:5750",
+      "healthPath": "/api/health",
+      "composeFile": "gateway-suite-LAB/docker-compose.yml",
+      "composeOverlays": [],
+      "tags": [
+        "ai-gateway",
+        "a2a",
+        "mcp",
+        "ai-guard",
+        "prompt-injection",
+        "agents",
+        "simulated"
+      ],
+      "notes": "Host-run: ./scripts/run.sh (port 5750). Mock default; Real needs CENTRAL_AGENT_A2A_URL (+ optional bearer, write-only) in ~/Development/.env. Docker: HOST_PORT=5750 docker compose up --build -d (published on 127.0.0.1 only). composeFile is relative to the demo root (the folder above this checkout)."
+    }
+  ],
+  "pingProducts": []
+}

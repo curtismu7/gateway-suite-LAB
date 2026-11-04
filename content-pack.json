@@ -1,0 +1,200 @@
+{
+  "schema": "demo-content-pack/1",
+  "id": "gateway-suite-lab",
+  "title": "AI Gateway Suite LAB",
+  "version": "0.1.0",
+  "demo": {
+    "id": "gateway-suite-lab",
+    "name": "AI Gateway Suite LAB",
+    "catalog": "D01",
+    "baseUrl": "http://localhost:5750",
+    "doctor": "/api/health",
+    "tags": [
+      "ai-gateway",
+      "a2a",
+      "mcp",
+      "ai-guard",
+      "prompt-injection",
+      "data-loss",
+      "agents",
+      "mock",
+      "simulated"
+    ]
+  },
+  "glossary": [
+    {
+      "id": "a2a",
+      "term": "A2A handoff",
+      "definition": "The message/send relay from the Main Agent to the Worker Agent through the AI Gateway, carried as JSON-RPC. The trace list shows one traceparent per hop."
+    },
+    {
+      "id": "ai-guard",
+      "term": "AI Guard",
+      "definition": "The gateway-side guard that can stop a prompt before it reaches a tool or an LLM. In this lab the blocks are produced by the deterministic mock responder; Real mode shows the configured agent's own guard behaviour."
+    },
+    {
+      "id": "mcp-gateway",
+      "term": "AI Gateway (MCP traffic)",
+      "definition": "The gateway hop between the Worker Agent and its MCP tools, where tool misuse and data-loss policies are enforced."
+    },
+    {
+      "id": "mock-mode",
+      "term": "MOCK labels",
+      "definition": "Mock-issued values in this lab are labelled MOCK. Real mode uses the configured central agent; its bearer key stays write-only and is never returned by any API."
+    },
+    {
+      "id": "personal-agent",
+      "term": "Personal Agent",
+      "definition": "The second tab: connect to a remote MCP server (Streamable HTTP, SSE fallback), list its tools, render parameter forms from inputSchema and call them. Mock mode connects to the in-process mock MCP server on loopback."
+    }
+  ],
+  "cards": [
+    {
+      "id": "try-access",
+      "label": "Access review",
+      "description": "Send a preset prompt from the \"Access review\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-injection",
+      "label": "Prompt injection · blocked",
+      "description": "Send a preset prompt from the \"Prompt injection · blocked\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-jailbreak",
+      "label": "Jailbreak · blocked",
+      "description": "Send a preset prompt from the \"Jailbreak · blocked\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-exfil",
+      "label": "Data exfiltration · sanitized",
+      "description": "Send a preset prompt from the \"Data exfiltration · sanitized\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-pii",
+      "label": "Personal data · sanitized",
+      "description": "Send a preset prompt from the \"Personal data · sanitized\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-toolabuse",
+      "label": "Tool misuse · blocked by MCP",
+      "description": "Send a preset prompt from the \"Tool misuse · blocked by MCP\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-malicious",
+      "label": "Malicious content · conditional",
+      "description": "Send a preset prompt from the \"Malicious content · conditional\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    },
+    {
+      "id": "try-interagent",
+      "label": "Inter-agent abuse · alert only",
+      "description": "Send a preset prompt from the \"Inter-agent abuse · alert only\" category through the relayed agent flow.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#/end-to-end"
+      },
+      "terms": [
+        "a2a",
+        "ai-guard",
+        "mcp-gateway",
+        "mock-mode",
+        "personal-agent"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "mcp-spec",
+      "title": "Model Context Protocol",
+      "url": "https://modelcontextprotocol.io",
+      "kind": "standard",
+      "use": "The wire protocol the Personal Agent speaks",
+      "status": "read",
+      "checked": "2026-11-04"
+    }
+  ]
+}
