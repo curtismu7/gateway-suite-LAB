@@ -12,7 +12,7 @@ services:
     environment:
       PORT: "5750"
       GWS_BIND: 0.0.0.0
-      LAB_ALLOWED_HOSTS: ${LAB_ALLOWED_HOSTS:-}
+      LAB_ALLOWED_HOSTS: ${LAB_ALLOWED_HOSTS:-gateway-suite-lab.local.ping-devops.com}
     env_file:
       - path: ${STANDALONE_ENV:-/Users/cmuir/Development/.env}
         required: false
