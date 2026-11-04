@@ -21,6 +21,10 @@ import { traceparent } from '../src/trace.js';
 
 installNetguard(); // no test in this file is allowed to reach a real host
 
+// Tests must not depend on the author's ~/Development/.env: point loadSharedEnv at a nonexistent
+// file so Real mode is unconfigured unless a test explicitly passes its own env (portable-tests rule).
+process.env.STANDALONE_ENV = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'no-such-shared-env.env');
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const mk = () => createApp({ health: createHealth({ intervalMs: 3_600_000 }) });
 

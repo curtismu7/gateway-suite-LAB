@@ -4,9 +4,12 @@ import { createApp } from './app.js';
 import { allPassed, runChecks } from './doctor.js';
 import { assertBindAllowed, bindHost, resolvePort } from './safety.js';
 import { startMockMcpServer } from './mockMcpServer.js';
-import { realEndpoints } from './env.js';
+import { loadSharedEnv, realEndpoints } from './env.js';
 
-installNetguard(); // before anything else can open a socket
+// In Real mode the configured central agent host (and trace host, if set) are the only extra
+// outbound hosts the netguard allows; in Mock mode the allowlist is empty (loopback only).
+// loadSharedEnv is merged in because the container gets the settings via compose env_file.
+installNetguard(realEndpoints({ ...process.env, ...loadSharedEnv() }).hostnames);
 
 // In Mock mode the netguard allowlist is empty: loopback only. In Real mode the configured
 // central agent host (and trace host, if set) are the only extra outbound hosts allowed.

@@ -4,7 +4,12 @@ import fs from 'node:fs';
 
 const CANDIDATES = () => {
   const list = [];
-  if (process.env.STANDALONE_ENV) list.push(process.env.STANDALONE_ENV);
+  if (process.env.STANDALONE_ENV) {
+    // STANDALONE_ENV is strict: tests (and any caller) use it to isolate from the author's
+    // machine, so a miss must NOT fall through to the default location.
+    list.push(process.env.STANDALONE_ENV);
+    return list;
+  }
   list.push(`${process.env.HOME}/Development/.env`);
   return list;
 };
