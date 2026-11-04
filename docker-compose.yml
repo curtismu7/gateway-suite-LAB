@@ -6,6 +6,7 @@ name: gateway-suite-LAB
 services:
   gateway-suite-lab:
     build: .
+    container_name: gateway-suite-lab
     ports:
       - "127.0.0.1:${HOST_PORT:-5750}:5750"
     environment:

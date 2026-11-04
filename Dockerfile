@@ -17,6 +17,7 @@ COPY web/package.json web/
 COPY server/package.json server/
 RUN npm ci --omit=dev -w server && npm cache clean --force
 COPY server/src server/src
+COPY server/data server/data
 COPY server/diagrams server/diagrams
 COPY --from=build /app/web/dist web/dist
 USER node
