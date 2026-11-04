@@ -3,7 +3,7 @@
     {
       "id": "gateway-suite-lab",
       "name": "AI Gateway Suite LAB",
-      "catalogId": "D-",
+      "catalogId": "D115",
       "kind": "Demo",
       "description": "Relayed agent chat: preset prompts (access review, prompt injection, jailbreak, exfiltration, PII, tool misuse) travel Main Agent -> AI Gateway (A2A) -> Worker Agent -> AI Gateway (MCP) -> MCP tool on a movable ReactFlow diagram with a per-hop trace and AI Guard blocks; a Personal Agent tab connects",
       "url": "http://localhost:5750",
