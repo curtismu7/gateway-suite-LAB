@@ -19,6 +19,7 @@ import { DIAGRAM_NAMES, loadDiagram } from './diagramData.js';
 import { loadCustomerConfig } from './customerConfig.js';
 import { STORIES, VERTICALS, allStoriesResolved } from './stories.js';
 import { renderSafeMarkdown } from './markdown.js';
+import { shelfInfo } from './shelfLink.js';
 
 const CUSTOMER = loadCustomerConfig();
 
@@ -304,6 +305,7 @@ export function createApp({ health = createHealth(), mode = createMode(), env = 
   });
 
   app.use('/api', api);
+  app.get('/api/shelf', (_req, res) => { res.set('Cache-Control', 'no-store'); res.json(shelfInfo()); }); // the header "Shelf" button
 
   if (fs.existsSync(WEB_DIST)) app.use(express.static(WEB_DIST));
   app.get('/favicon.ico', (_req, res) => { res.set('Content-Type', 'image/svg+xml'); res.set('Cache-Control', 'public, max-age=86400'); res.send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" rx="3" fill="#b33"/><path d="M3 12 6 4h1.5l3 8H9l-.6-1.8H5.6L5 12zm3-3 1-3 1 3z" fill="white"/></svg>'); });

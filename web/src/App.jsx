@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import ShelfLink from "./components/ShelfLink.jsx";
 import { getCatalog, getInfo, requestModeSwitch, resetServer } from "./lib/api.js";
 import ModeToggle from "./components/ModeToggle.jsx";
 import EndToEndTab from "./tabs/EndToEndTab.jsx";
@@ -73,6 +74,7 @@ export default function App() {
           <div className="shell-brand">
             <span className="head__mark" aria-hidden="true">GWS</span>
             <h1 className="head__title">AI Gateway Suite LAB</h1>
+        <ShelfLink />
           </div>
           <div className="shell-right">
             <ModeToggle info={info} onSelect={onMode} />
