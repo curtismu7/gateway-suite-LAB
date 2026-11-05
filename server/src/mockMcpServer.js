@@ -61,7 +61,7 @@ const TOOL_IMPL = {
     const role = String(args.role || '');
     const holders = [];
     for (const [user, grants] of Object.entries({ 'alice.chen': grantsFor('alice.chen'), 'erin.walsh': grantsFor('erin.walsh'), 'carol.nguyen': grantsFor('carol.nguyen'), 'dave.okoro': grantsFor('dave.okoro'), 'bob.reyes': grantsFor('bob.reyes') })) {
-      for (const g of grants) if (g.role === role) holders.push({ user: profile(user), role: g.role, resource: g.resource, grantedAt: g.grantedAt, expiresAt: g.expiresAt, lastUsed: g.lastUsed, mock: 'MOCK' });
+      for (const g of grants) if (g.role === role) holders.push({ user: profile(user), role: g.role, resource: g.resource, grantedAt: g.grantedAt, grantedBy: g.grantedBy, expiresAt: g.expiresAt, lastUsed: g.lastUsed, mock: 'MOCK' });
     }
     return { role, holders, knownRoles: ['prod-db-admin', 'prod-db-reader', 'break-glass', 'deployer', 'reader'], mock: 'MOCK' };
   },

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import FlowDiagram from "../components/FlowDiagram.jsx";
 import { chatStream } from "../lib/api.js";
+import { humanToolResult } from "./PersonalAgentTab.jsx";
 
 const FLOW_BY_KIND = {
   handoff: "path-delegate",
@@ -12,7 +13,7 @@ export default function EndToEndTab({ catalog, source }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [traces, setTraces] = useState([]);
-  const [answer, setAnswer] = useState({ text: "", html: "", blocked: "", error: "" });
+  const [answer, setAnswer] = useState({ text: "", html: "", tool: null, blocked: "", error: "" });
   const [activePath, setActivePath] = useState("");
   const [blocked, setBlocked] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -24,7 +25,7 @@ export default function EndToEndTab({ catalog, source }) {
   useEffect(() => { traceRef.current?.scrollTo({ top: traceRef.current.scrollHeight }); }, [traces]);
 
   const reset = () => {
-    setTraces([]); setAnswer({ text: "", html: "", blocked: "", error: "" });
+    setTraces([]); setAnswer({ text: "", html: "", tool: null, blocked: "", error: "" });
     setActivePath(""); setBlocked(false);
   };
 
@@ -47,7 +48,7 @@ export default function EndToEndTab({ catalog, source }) {
         } else if (name === "token") {
           setAnswer((a) => ({ ...a, text: a.text + (payload.text || "") }));
         } else if (name === "rendered") {
-          setAnswer((a) => ({ ...a, html: payload.html || "" }));
+          setAnswer((a) => ({ ...a, html: payload.html || "", tool: payload.tool || null }));
         } else if (name === "blocked") {
           setBlocked(true);
           setAnswer((a) => ({ ...a, blocked: payload.reason || "Blocked by AI Guard." }));
@@ -105,7 +106,14 @@ export default function EndToEndTab({ catalog, source }) {
             {answer.blocked && <p className="alert" role="alert" data-testid="blocked">Blocked by AI Guard: {answer.blocked}</p>}
             {answer.error && <p className="alert" role="alert" data-testid="chat-error">{answer.error}</p>}
             {answer.html
-              ? <div className="md" data-testid="answer" dangerouslySetInnerHTML={{ __html: answer.html }} />
+              ? (
+                <div className="md" data-testid="answer">
+                  <div dangerouslySetInnerHTML={{ __html: answer.html }} />
+                  {answer.tool
+                    ? <div className="tool-cards" dangerouslySetInnerHTML={{ __html: humanToolResult(answer.tool) || "" }} />
+                    : null}
+                </div>
+              )
               : answer.text && <pre className="inert" data-testid="answer">{answer.text}</pre>}
           </div>
           <form className="composer" onSubmit={(e) => { e.preventDefault(); send(); }}>

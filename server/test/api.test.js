@@ -122,7 +122,8 @@ test('chat mock flow: access review returns tool data with MOCK labels and a tra
   const token = kindOf(r.events, 'token')[0];
   assert.match(token.text, /MOCK/);
   const rendered = kindOf(r.events, 'rendered')[0];
-  assert.ok(rendered.html.includes('alice.chen'));
+  assert.ok(rendered.html.includes('Alice Chen'), 'the human answer names the user');
+  assert.ok(rendered.tool && rendered.tool.user && rendered.tool.user.id === 'alice.chen', 'rendered carries the structured tool result for the client-side cards');
   assert.ok(kindOf(r.events, 'done').length === 1);
 });
 
@@ -139,7 +140,8 @@ test('chat mock flow: PII prompt returns [REDACTED] fields with the redaction no
   const r = await call(mk(), 'POST', '/api/chat', { message: 'P2 redaction: list Erin Walsh entitlements' });
   assert.equal(r.status, 200);
   const token = kindOf(r.events, 'token').map((t) => t.text).join('');
-  assert.ok(token.includes('[REDACTED]'), 'redacted marker present');
+  const rendered = kindOf(r.events, 'rendered').map((t) => (t.tool ? JSON.stringify(t.tool) : '')).join('');
+  assert.ok((token + rendered).includes('[REDACTED]'), 'redacted marker present in the answer or the tool cards');
   const redactionTrace = kindOf(r.events, 'trace').filter((t) => /redact/i.test(t.text));
   assert.ok(redactionTrace.length >= 1);
 });

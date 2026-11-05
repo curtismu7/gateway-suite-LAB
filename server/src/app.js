@@ -73,7 +73,19 @@ export const PROMPT_CATEGORIES = [
 // The mock scenario responder's answer, rendered as the A2A answer the mock agent "returns".
 function mockAnswerText(answer) {
   if (answer.kind === 'blocked') return answer.reason;
-  if (answer.kind === 'tool') return JSON.stringify({ tool: answer.tool, redacted: Boolean(answer.redacted), result: answer.result, notice: 'MOCK' }, null, 2);
+  if (answer.kind === 'tool') {
+    // One-line lead plus the MOCK notice; the structured rows render on the client (rendered.tool).
+    const r = answer.result || {};
+    const head = r.resource ? `Access review for **${r.resource}** complete.`
+      : r.role ? `Role review for **${r.role}** complete.`
+      : r.user ? `Entitlement review for **${r.user?.name || r.user}** complete.`
+      : r.ticket ? `Ticket **${r.ticket?.id}** opened.`
+      : 'Review complete.';
+    const n = r.grants ?? r.holders ?? r.entitlements;
+    const count = Array.isArray(n) ? ` ${n.length} grant${n.length === 1 ? '' : 's'} found.` : '';
+    const redaction = answer.redacted ? `\n\n**Personal data redacted:** ${r.redaction || 'sensitive fields were masked before the answer left the worker.'}` : '';
+    return `${head}${count}${redaction}\n\n_SIMULATED answer: the tool rows below are mock data, labelled MOCK._`;
+  }
   return answer.text;
 }
 
@@ -159,12 +171,14 @@ export function createApp({ health = createHealth(), mode = createMode(), env = 
         send('blocked', { reason: answer.reason });
       } else {
         const text = mockAnswerText(answer);
+        const toolData = answer.kind === 'tool' ? answer.result : null;
         trace('mcp-call', `MCP call · ${answer.tool || 'tools'}`, { detail: JSON.stringify(answer.result || {}, null, 2) });
         trace('mcp-result', `MCP result · ${answer.tool || 'tools'}`, { detail: JSON.stringify(answer.result || {}, null, 2) });
         if (answer.redacted) trace('guard', 'Personal data redacted by data-loss policy', { partial: true });
         trace('result', 'Worker agent response received');
         send('token', { text: `${text}\n\n_${BANNER('mock').replace('MOCK mode. SIMULATED: ', 'SIMULATED answer: ')}` });
-        send('rendered', { html: renderSafeMarkdown(text) });
+        // The tool result goes with the trace; the answer card gets the human rendering, like the Personal Agent tab.
+        send('rendered', { html: renderSafeMarkdown(text), tool: toolData });
       }
       send('done', { traceparent: traceparent(traceId) });
       res.end();
