@@ -17,7 +17,8 @@ export default function App() {
   const [info, setInfo] = useState(null);
   const [loadError, setLoadError] = useState(null);
   const [tab, setTab] = useState(tabFromHash);
-  const [theme, setTheme] = useState(() => (["light", "dark"].includes(read("gws.theme", "")) ? read("gws.theme", "") : "system"));
+  const [theme, setThemeState] = useState(() => (["light", "dark"].includes(read("gws.theme", "")) ? read("gws.theme", "") : "system"));
+  const setTheme = (t) => { write("gws.theme", t === "system" ? "" : t); setThemeState(t); };
   const [present, setPresent] = useState(() => read("gws.present", "0") === "1");
   const [announce, setAnnounce] = useState("");
 
@@ -78,7 +79,13 @@ export default function App() {
           </div>
           <div className="shell-right">
             <ModeToggle info={info} onSelect={onMode} />
-            <button type="button" className="btn" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} data-testid="theme">Theme</button>
+            <label className="inline">Theme
+              <select value={theme} onChange={(e) => setTheme(e.target.value)} data-testid="theme">
+                <option value="system">Auto</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
             <button type="button" className="btn" aria-pressed={present} title="Presenter mode: larger type for a room" onClick={() => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; })} data-testid="present">Presenter</button>
             <button type="button" className="btn" onClick={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }} data-testid="reset">Reset</button>
           </div>
