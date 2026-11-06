@@ -22,7 +22,7 @@ function boxStyle(color) {
     borderRadius: 8,
     padding: "8px 12px",
     fontSize: 12,
-    width: 190,
+    width: 150,
   };
 }
 
@@ -32,7 +32,7 @@ export default function FlowDiagram({ diagram, activePath, blocked, speed, onRes
     if (!diagram) return { nodes: [], edges: [] };
     const nodes = diagram.nodes.map((n) => ({
       id: n.id,
-      position: { x: (n.x ?? 0) * 220, y: (n.y ?? 0) * 140 },
+      position: { x: (n.x ?? 0) * 250, y: (n.y ?? 0) * 140 },
       data: { label: <div><strong>{n.label}</strong>{(n.sub || []).map((s, i) => <div key={i} className="flow-sub">{s}</div>)}</div> },
       style: boxStyle(diagram.groups?.[n.group]?.color),
       draggable: true,

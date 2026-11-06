@@ -12,11 +12,11 @@
   },
   "nodes": [
     { "id": "main", "group": "main", "label": "Main Agent", "sub": ["concierge", "relays the prompt"], "x": 0, "y": 0 },
-    { "id": "gw-a2a", "group": "gw-a2a", "label": "AI Gateway", "sub": ["A2A traffic", "AI Guard"], "x": 3, "y": 0 },
-    { "id": "worker", "group": "worker", "label": "Worker Agent", "sub": ["analyst", "plans tool calls"], "x": 6, "y": 0 },
-    { "id": "gw-mcp", "group": "gw-mcp", "label": "AI Gateway", "sub": ["MCP traffic", "AI Guard"], "x": 9, "y": 0 },
-    { "id": "mcp", "group": "tool", "label": "MCP tool", "sub": ["access governance data"], "x": 12, "y": 0 },
-    { "id": "llm", "group": "tool", "label": "LLM", "sub": ["drafts the answer"], "x": 12, "y": 3 }
+    { "id": "gw-a2a", "group": "gw-a2a", "label": "AI Gateway", "sub": ["A2A traffic", "AI Guard"], "x": 1, "y": 0 },
+    { "id": "worker", "group": "worker", "label": "Worker Agent", "sub": ["analyst", "plans tool calls"], "x": 2, "y": 0 },
+    { "id": "gw-mcp", "group": "gw-mcp", "label": "AI Gateway", "sub": ["MCP traffic", "AI Guard"], "x": 3, "y": 0 },
+    { "id": "mcp", "group": "tool", "label": "MCP tool", "sub": ["access governance data"], "x": 4, "y": 0 },
+    { "id": "llm", "group": "tool", "label": "LLM", "sub": ["drafts the answer"], "x": 4, "y": 2 }
   ],
   "edges": [
     { "id": "e1", "from": "main", "to": "gw-a2a", "label": "A2A message/send", "color": "blue" },
