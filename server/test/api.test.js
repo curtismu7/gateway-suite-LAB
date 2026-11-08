@@ -317,3 +317,17 @@ test('mock responder separates every labelled attack category from the access pr
     assert.notEqual(respond(p).kind, 'blocked', p);
   }
 });
+
+test('GET /api/shelf is reachable with no web build: returns the SHELF_URL (trailing slash trimmed); POST is not 200', async () => {
+  const before = process.env.SHELF_URL;
+  process.env.SHELF_URL = 'https://shelf.example:8443/';
+  try {
+    const got = await call(mk(), 'GET', '/api/shelf');
+    assert.equal(got.status, 200);
+    assert.deepEqual(got.json, { shelfUrl: 'https://shelf.example:8443' });
+    const posted = await call(mk(), 'POST', '/api/shelf', {});
+    assert.notEqual(posted.status, 200);
+  } finally {
+    if (before === undefined) delete process.env.SHELF_URL; else process.env.SHELF_URL = before;
+  }
+});
