@@ -19,6 +19,8 @@ test("the OAuth dialog renders in FloatingDialog, keeps its link and buttons, an
   expect(within(dialog).getByTestId("fd-titlebar")).toHaveTextContent("Authentication required");
   expect(within(dialog).getByRole("link", { name: "Authenticate user" })).toHaveAttribute("href", "https://mcp.example/authorize?x=1");
   expect(within(dialog).getByRole("button", { name: "Not now" })).toBeInTheDocument();
+  // FloatingDialog moves focus in and starts listening for Escape in the same effect pass: wait for it before pressing.
+  await waitFor(() => expect(within(dialog).getByRole("button", { name: "Close" })).toHaveFocus());
   fireEvent.keyDown(document.body, { key: "Escape" });
   await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
 });
