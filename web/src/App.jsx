@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import ShelfLink from "./components/ShelfLink.jsx";
 import { getCatalog, getInfo, requestModeSwitch, resetServer } from "./lib/api.js";
 import ModeToggle from "./components/ModeToggle.jsx";
+// Opened from Customer Agent LAB (UC-TOOL3 routes here): strip + header Back only. Nothing is preselected.
+import ReturnLink from "./return-link/ReturnLink.jsx";
 import EndToEndTab from "./tabs/EndToEndTab.jsx";
 import PersonalAgentTab from "./tabs/PersonalAgentTab.jsx";
 
@@ -71,6 +73,7 @@ export default function App() {
       <a className="skip" href="#main">Skip to content</a>
       <header className="shell">
         <p className="banner" data-testid="banner" role="note">{banner}</p>
+        <ReturnLink app="gateway-suite-lab" />
         <div className="shell-bar">
           <div className="shell-brand">
             <span className="head__mark" aria-hidden="true">GWS</span>
@@ -78,6 +81,7 @@ export default function App() {
         <ShelfLink />
           </div>
           <div className="shell-right">
+            <ReturnLink app="gateway-suite-lab" variant="header" />
             <ModeToggle info={info} onSelect={onMode} />
             <label className="inline">Theme
               <select value={theme} onChange={(e) => setTheme(e.target.value)} data-testid="theme">
