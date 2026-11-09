@@ -1,6 +1,7 @@
 # AI Gateway Suite LAB
 
 Tier: Demo
+Repo: https://github.com/curtismu7/gateway-suite-LAB
 
 An agent-access demo, relayed end to end: you pick a preset prompt (access review, prompt injection, jailbreak, exfiltration, PII, tool misuse, malicious content, inter-agent abuse) and watch it travel **Main Agent → AI Gateway (A2A) → Worker Agent → AI Gateway (MCP) → MCP tool → LLM** on a movable ReactFlow diagram, with an SSE trace (handoff / guard / mcp-call / mcp-result / result / blocked, one W3C traceparent per hop) and the rendered answer. Attack prompts are stopped by AI Guard at the gateway; PII prompts come back with `[REDACTED]` fields. The second tab, **Personal Agent**, connects to a remote MCP server (Streamable HTTP, SSE fallback), lists its tools, renders parameter forms from `inputSchema` and calls them, with the OAuth-pending dialog flow in Real mode.
 
