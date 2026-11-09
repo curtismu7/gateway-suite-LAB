@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { mcpCall, mcpConnect, mcpDisconnect, mcpStatus } from "../lib/api.js";
+import FloatingDialog from "../floating-dialog/FloatingDialog";
 
 function escapeHtml(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -126,6 +127,8 @@ export default function PersonalAgentTab({ source }) {
     setSelected(null); setResult(null);
   };
 
+  const notNow = useCallback(() => setState((s) => ({ ...s, pendingOAuth: "" })), []);
+
   const showResult = (r) => {
     setResult(r);
   };
@@ -148,16 +151,16 @@ export default function PersonalAgentTab({ source }) {
       </form>
       {error && <p className="alert" role="alert" data-testid="mcp-error">{error}</p>}
 
-      <dialog open={Boolean(state.pendingOAuth)} aria-label="Authentication required">
-        <div className="card">
-          <h3>Authentication required</h3>
-          <p>The remote MCP server requires you to authenticate before its tools can be used.</p>
-          <div className="actions">
-            <a className="btn primary" href={state.pendingOAuth || "#"} target="_blank" rel="noreferrer">Authenticate user</a>
-            <button type="button" className="btn" onClick={() => setState((s) => ({ ...s, pendingOAuth: "" }))}>Not now</button>
-          </div>
+      {/* Shared FloatingDialog (movable, resizable). Pop-out is off: the dialog holds a target="_blank" link, which the
+          floating-dialog README says not to put in a popped-out window. */}
+      <FloatingDialog isOpen={Boolean(state.pendingOAuth)} onClose={notNow} title="Authentication required" testId="oauth-dialog"
+        defaultWidth={420} defaultHeight={null} minHeight={160} footer={null} disablePopOut>
+        <p>The remote MCP server requires you to authenticate before its tools can be used.</p>
+        <div className="actions">
+          <a className="btn primary" href={state.pendingOAuth || "#"} target="_blank" rel="noreferrer">Authenticate user</a>
+          <button type="button" className="btn" onClick={notNow}>Not now</button>
         </div>
-      </dialog>
+      </FloatingDialog>
 
       <div className="mcp-grid">
         <aside className="card" aria-label="Discovered tools">
