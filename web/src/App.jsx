@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ShelfLink from "./components/ShelfLink.jsx";
 import { getCatalog, getInfo, requestModeSwitch, resetServer } from "./lib/api.js";
-import ModeToggle from "./components/ModeToggle.jsx";
+import TopMenu from "./top-menu/TopMenu.jsx";
 // Opened from Customer Agent LAB (UC-TOOL3 routes here): strip + header Back only. Nothing is preselected.
 import ReturnLink from "./return-link/ReturnLink.jsx";
 import EndToEndTab from "./tabs/EndToEndTab.jsx";
@@ -82,16 +82,14 @@ export default function App() {
           </div>
           <div className="shell-right">
             <ReturnLink app="gateway-suite-lab" variant="header" />
-            <ModeToggle info={info} onSelect={onMode} />
-            <label className="inline">Theme
-              <select value={theme} onChange={(e) => setTheme(e.target.value)} data-testid="theme">
-                <option value="system">Auto</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-            </label>
-            <button type="button" className="btn" aria-pressed={present} title="Presenter mode: larger type for a room" onClick={() => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; })} data-testid="present">Presenter</button>
-            <button type="button" className="btn" onClick={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }} data-testid="reset">Reset</button>
+            <TopMenu
+              mode={{ value: source === "real" ? "real" : "mock", onChange: onMode, realAvailable: info ? info.realAvailable === true : null, realHint: info?.realReason }}
+              theme={{ value: theme === "system" ? "auto" : theme, onChange: setTheme }}
+              present={{ active: present, onToggle: () => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; }), label: "Present" }}
+              help={{ href: "https://github.com/curtismu7/gateway-suite-LAB#readme" }}
+              version={info?.version || null}
+              onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
+            />
           </div>
         </div>
         <nav aria-label="Tabs" className="tabs">

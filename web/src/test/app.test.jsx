@@ -62,10 +62,10 @@ test("banner: fallback while loading, server banner after, names the mode", asyn
 test("rule 19: Real disabled with how-to tooltip when unconfigured; switching is refused client-side", async () => {
   render(<App />);
   await screen.findByTestId("banner");
-  const real = screen.getByTestId("mode-real");
-  expect(real).toBeDisabled();
+  const real = screen.getByTestId("mode-select").querySelector('option[value="real"]');
+  expect(real.disabled).toBe(true);
   expect(real.getAttribute("title")).toMatch(/CENTRAL_AGENT_A2A_URL/);
-  expect(screen.getByTestId("mode-mock").getAttribute("aria-pressed")).toBe("true");
+  expect(screen.getByTestId("mode-select").value).toBe("mock");
 });
 
 test("rule 19: when Real is configured, clicking it POSTs /api/mode and reloads the data", async () => {
@@ -73,9 +73,9 @@ test("rule 19: when Real is configured, clicking it POSTs /api/mode and reloads 
   const user = userEvent.setup();
   render(<App />);
   await screen.findByTestId("banner");
-  const real = screen.getByTestId("mode-real");
-  expect(real).toBeEnabled();
-  await user.click(real);
+  const real = screen.getByTestId("mode-select").querySelector('option[value="real"]');
+  expect(real.disabled).toBe(false);
+  await user.selectOptions(screen.getByTestId("mode-select"), "real");
   await waitFor(() => expect(requestModeSwitch).toHaveBeenCalledWith("real"));
   expect(getCatalog).toHaveBeenCalledTimes(2); // initial + after the switch
 });

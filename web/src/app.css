@@ -16,7 +16,7 @@ code { font-size: 13px; overflow-wrap: anywhere; }
 .skip:focus { top: 8px; }
 
 /* App shell: header bar with the Ping-red gradient rule, pill nav (UI patterns P1). */
-.shell-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 3px solid; border-image: var(--accent-gradient) 1; }
+.shell-bar { position: relative; display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 3px solid; border-image: var(--accent-gradient) 1; }
 .shell-brand { display: flex; align-items: center; gap: 10px; }
 .head__mark { display: inline-grid; place-items: center; padding: 2px 8px; border-radius: 6px; background: var(--accent); color: var(--on-accent); font: 700 13px var(--font-mono); letter-spacing: 0.08em; }
 .head__title { margin: 0; font-size: 20px; }

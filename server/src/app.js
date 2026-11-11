@@ -107,7 +107,7 @@ export function createApp({ health = createHealth(), mode = createMode(), env = 
   api.use(express.json({ limit: '64kb' }));
   api.use('/health', health.router);
 
-  const info = () => ({ ...mode.info(), banner: BANNER(mode.source()), epoch, netguardAttempts: netguard.attempts().length });
+  const info = () => ({ ...mode.info(), banner: BANNER(mode.source()), epoch, netguardAttempts: netguard.attempts().length, version: (() => { try { return JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version || null; } catch { return null; } })() });
   api.get('/info', (_req, res) => { res.set('Cache-Control', 'no-store'); res.json(info()); });
 
   // Rule 19: POST /api/mode with exactly {"source": "mock"|"real"}. Real unconfigured -> 409.
