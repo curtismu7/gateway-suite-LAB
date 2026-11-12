@@ -6,8 +6,9 @@ import TopMenu from "./top-menu/TopMenu.jsx";
 import ReturnLink from "./return-link/ReturnLink.jsx";
 import EndToEndTab from "./tabs/EndToEndTab.jsx";
 import PersonalAgentTab from "./tabs/PersonalAgentTab.jsx";
+import TalkTrackTab from "./tabs/TalkTrackTab.jsx";
 
-export const TABS = [["end-to-end", "End to End"], ["mcp", "Personal Agent"]];
+export const TABS = [["end-to-end", "End to End"], ["mcp", "Personal Agent"], ["talk", "Talk track"]];
 export const FALLBACK_BANNER = "MOCK mode. SIMULATED: the central agent, AI Guard blocks, MCP tools and LLM answer are a deterministic in-process responder. No tenant, no outbound network.";
 const read = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch { /* not remembered */ } };
@@ -89,6 +90,7 @@ export default function App() {
               help={{ href: "https://github.com/curtismu7/gateway-suite-LAB#readme" }}
               version={info?.version || null}
               onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
+              talkTrack={{ active: tab === "talk", onToggle: () => { if (tab !== "talk") window.location.hash = "#/talk"; } }}
             />
           </div>
         </div>
@@ -101,7 +103,9 @@ export default function App() {
       <main className="page" id="main" tabIndex={-1}>
         {tab === "mcp"
           ? <PersonalAgentTab source={source} />
-          : <EndToEndTab catalog={catalog} source={source} />}
+          : tab === "talk"
+            ? <TalkTrackTab />
+            : <EndToEndTab catalog={catalog} source={source} />}
       </main>
       <footer><p className="muted small">{source === "real" ? "Real mode: chat is relayed to the configured central agent." : "Mock mode: every agent, gateway, tool and answer is simulated in-process."}</p></footer>
       <div aria-live="polite" className="visually-hidden">{announce}</div>
