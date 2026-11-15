@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import App, { FALLBACK_BANNER } from "../App.jsx";
 import ModeToggle from "../components/ModeToggle.jsx";
+import { setJsonView } from "../components/JsonPane.jsx";
 import { chatStream, mcpCall, requestModeSwitch, getCatalog, getInfo } from "../lib/api.js";
 
 const DIAGRAM = {
@@ -47,6 +48,7 @@ vi.mock("../lib/api.js", () => ({
 }));
 
 beforeEach(() => {
+  setJsonView("form");
   vi.mocked(chatStream).mockReset();
   vi.mocked(mcpCall).mockReset();
   vi.mocked(getCatalog).mockClear();
@@ -118,6 +120,31 @@ test("chat: an access prompt streams trace + answer; a blocked prompt shows the 
   await waitFor(() => expect(screen.getByTestId("blocked").textContent).toMatch(/Blocked by AI Guard/));
 });
 
+test("chat: a trace detail that holds JSON gets the Form | JSON pane; a plain-text detail stays text", async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await screen.findByTestId("banner");
+  vi.mocked(chatStream).mockImplementationOnce(async (message, onEvent) => {
+    onEvent("trace", { kind: "mcp-result", text: "MCP result · list_entitlements", tp: "00-a-c-01", at: "0.1s", detail: JSON.stringify({ user: { id: "alice.chen" }, note: "MOCK" }, null, 2) });
+    onEvent("trace", { kind: "guard", text: "AI Guard blocked request", tp: "00-a-d-01", at: "0.2s", detail: "prompt-injection pattern detected" });
+    onEvent("done", {});
+  });
+  await user.type(screen.getByTestId("chat-input"), "List all entitlements for alice.chen");
+  await user.click(screen.getByTestId("chat-send"));
+  const trace = await screen.findByTestId("trace");
+  await waitFor(() => expect(trace.querySelectorAll(".jsonbox").length).toBe(2));
+  const [json, text] = trace.querySelectorAll(".jsonbox");
+  expect(json.getAttribute("data-view")).toBe("form");
+  expect([...json.querySelectorAll("button")].map((b) => b.textContent)).toEqual(["Form", "JSON"]);
+  expect(json.textContent).toContain("alice.chen");
+  await user.click([...json.querySelectorAll("button")].find((b) => b.textContent === "JSON"));
+  expect(json.getAttribute("data-view")).toBe("raw");
+  expect(json.querySelector("pre.json--raw").textContent).toContain('"id": "alice.chen"');
+  expect(text.getAttribute("data-view")).toBe("text");
+  expect(text.querySelectorAll("button").length).toBe(0);
+  expect(text.textContent).toContain("prompt-injection pattern detected");
+});
+
 test("flow diagram renders the served nodes and a speed control", async () => {
   render(<App />);
   await screen.findByTestId("banner");
@@ -143,6 +170,10 @@ test("personal agent tab: connect lists tools and renders a parameter form from 
   await user.type(screen.getByTestId("tool-form").querySelector("input"), "prod-db-admin");
   await user.click(screen.getByTestId("tool-form").querySelector('button[type="submit"]'));
   await waitFor(() => expect(screen.getByTestId("tool-result").textContent).toContain("Active"));
+  // The raw result goes through the shared JsonPane: Form first, the exact JSON text after the JSON button.
+  expect(screen.getByTestId("tool-result-json").textContent).toContain("prod-db-primary");
+  await user.click(screen.getByTestId("tool-result-json-raw"));
+  expect(screen.getByTestId("tool-result-json").textContent).toContain('"role": "prod-db-admin"');
 });
 
 test("grant rows render Expired / Never used / Active tags", async () => {
