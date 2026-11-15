@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { mcpCall, mcpConnect, mcpDisconnect, mcpStatus } from "../lib/api.js";
 import FloatingDialog from "../floating-dialog/FloatingDialog";
+import Json from "../components/JsonPane.jsx";
+
+// Keys that matter in this lab's access-governance payloads (JsonPane already stands out sub, aud, scope, error, note ...).
+export const HOT_KEYS = ["user", "role", "resource", "expiresAt", "lastUsed", "ticket", "redaction"];
 
 function escapeHtml(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -188,7 +192,7 @@ export default function PersonalAgentTab({ source }) {
                 <div className="tool-result" data-testid="tool-result">
                   <h4>Result</h4>
                   {human ? <div dangerouslySetInnerHTML={{ __html: human }} /> : <p className="muted">No human-readable view for this result shape.</p>}
-                  <details><summary>Raw JSON</summary><pre className="inert inert--block">{JSON.stringify(result, null, 2)}</pre></details>
+                  <details><summary>Result data</summary><Json value={result} label="Tool result" testId="tool-result-json" hot={HOT_KEYS} /></details>
                 </div>
               )}
             </>

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import FlowDiagram from "../components/FlowDiagram.jsx";
 import { chatStream } from "../lib/api.js";
-import { humanToolResult } from "./PersonalAgentTab.jsx";
+import { humanToolResult, HOT_KEYS } from "./PersonalAgentTab.jsx";
+import Json from "../components/JsonPane.jsx";
 
 const FLOW_BY_KIND = {
   handoff: "path-delegate",
@@ -19,10 +20,8 @@ export default function EndToEndTab({ catalog, source }) {
   const [speed, setSpeed] = useState(1);
   const [announce, setAnnounce] = useState("");
   const chatRef = useRef(null);
-  const traceRef = useRef(null);
 
   useEffect(() => { chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight }); }, [answer]);
-  useEffect(() => { traceRef.current?.scrollTo({ top: traceRef.current.scrollHeight }); }, [traces]);
 
   const reset = () => {
     setTraces([]); setAnswer({ text: "", html: "", tool: null, blocked: "", error: "" });
@@ -131,13 +130,13 @@ export default function EndToEndTab({ catalog, source }) {
 
         <aside className="card" aria-label="Request trace">
           <h3>Trace</h3>
-          <div className="trace-list" data-testid="trace" ref={traceRef}>
+          <div className="trace-list" data-testid="trace">
             {traces.length === 0 && <p className="muted">Request activity appears here.</p>}
             {traces.map((t, i) => (
               <div key={i} className={`trace-item trace-${t.kind}`}>
                 <div className="trace-head"><strong>{t.text}</strong><span className="muted small">{t.at}</span></div>
                 <code className="small muted">{t.tp}</code>
-                {t.detail && <pre className="inert inert--block">{t.detail}</pre>}
+                {t.detail && <Json value={t.detail} label={t.text} hot={HOT_KEYS} />}
               </div>
             ))}
           </div>

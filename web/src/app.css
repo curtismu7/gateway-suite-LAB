@@ -68,13 +68,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .composer { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
 .composer textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; resize: vertical; }
 
-.trace-list { display: grid; gap: 8px; max-height: 460px; overflow-y: auto; }
+.trace-list { display: grid; gap: 8px; }
 .trace-item { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); }
 .trace-item.trace-guard { border-color: var(--danger-text); }
 .trace-item.trace-result { border-color: var(--status-ok); }
 .trace-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
 .inert { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-mono); }
-.inert--block { display: block; margin: 6px 0 0; padding: 8px; font-size: 12px; border: 1px dashed var(--border); border-radius: 8px; background: var(--surface); max-height: 200px; overflow: auto; }
 
 .mcp-connect { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 14px; }
 .tool-list { display: grid; gap: 6px; }
