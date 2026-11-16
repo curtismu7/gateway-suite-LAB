@@ -54,61 +54,54 @@ export default function App() {
     } catch (e) { setAnnounce(e.message); }
   }, []);
 
-  const banner = info?.banner ?? FALLBACK_BANNER;
-
-  if (loadError || !catalog) {
-    return (
-      <>
-        <a className="skip" href="#main">Skip to content</a>
-        <header><p className="banner">{FALLBACK_BANNER}</p></header>
-        <main className="page" id="main" tabIndex={-1}>
-          {loadError ? <p className="alert" role="alert">Could not reach the lab server: {loadError}</p> : <p className="muted" role="status">Loading the AI Gateway Suite LAB…</p>}
-        </main>
-      </>
-    );
-  }
-
+  const loaded = !loadError && !!catalog;
+  const banner = loaded ? (info?.banner ?? FALLBACK_BANNER) : FALLBACK_BANNER;
   const source = info?.source ?? "mock";
 
+  // Standard app shell (STANDALONE-UI-PATTERNS section 1): the Core Dark shell bar first, then <main> whose first child is the
+  // simulation banner; the hand-off strip goes right below the banner. Loading and error states keep the same order.
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
-      <header className="shell">
-        <p className="banner" data-testid="banner" role="note">{banner}</p>
-        <ReturnLink app="gateway-suite-lab" />
-        <div className="shell-bar">
-          <div className="shell-brand">
-            <span className="head__mark" aria-hidden="true">GWS</span>
-            <h1 className="head__title">AI Gateway Suite LAB</h1>
-        <ShelfLink />
-          </div>
-          <div className="shell-right">
-            <ReturnLink app="gateway-suite-lab" variant="header" />
-            <TopMenu
-              mode={{ value: source === "real" ? "real" : "mock", onChange: onMode, realAvailable: info ? info.realAvailable === true : null, realHint: info?.realReason }}
-              theme={{ value: theme === "system" ? "auto" : theme, onChange: setTheme }}
-              present={{ active: present, onToggle: () => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; }), label: "Present" }}
-              help={{ href: "https://github.com/curtismu7/gateway-suite-LAB#readme" }}
-              version={info?.version || null}
-              onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
-              talkTrack={{ active: tab === "talk", onToggle: () => { if (tab !== "talk") window.location.hash = "#/talk"; } }}
-            >
-              <VerifyMark id="gateway-suite-lab" />
-            </TopMenu>
-          </div>
-        </div>
-        <nav aria-label="Tabs" className="tabs">
+      <header className="shell-bar">
+        <span className="shell-brand">
+          <span className="shell-logo" aria-hidden="true">GWS</span>
+          <h1>AI Gateway Suite LAB</h1>
+          {loaded && (source === "real"
+            ? <span className="shell-badge shell-badge--real" data-testid="mode-badge">Real</span>
+            : <span className="shell-badge" data-testid="mode-badge">Mock</span>)}
+        </span>
+        <nav className="shell-nav" aria-label="Tabs">
           {TABS.map(([id, label]) => (
-            <a key={id} href={`#/${id}`} aria-current={tab === id ? "page" : undefined} className="tab" onClick={() => setTab(id)} data-testid={`tab-${id}`}>{label}</a>
+            <a key={id} href={`#/${id}`} aria-current={tab === id ? "page" : undefined} onClick={() => setTab(id)} data-testid={`tab-${id}`}>{label}</a>
           ))}
         </nav>
+        {loaded && (
+          <TopMenu
+            mode={{ value: source === "real" ? "real" : "mock", onChange: onMode, realAvailable: info ? info.realAvailable === true : null, realHint: info?.realReason }}
+            theme={{ value: theme === "system" ? "auto" : theme, onChange: setTheme }}
+            present={{ active: present, onToggle: () => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; }), label: "Present" }}
+            help={{ href: "https://github.com/curtismu7/gateway-suite-LAB#readme" }}
+            version={info?.version || null}
+            onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
+            talkTrack={{ active: tab === "talk", onToggle: () => { if (tab !== "talk") window.location.hash = "#/talk"; } }}
+          >
+            <ShelfLink />
+            <VerifyMark id="gateway-suite-lab" />
+            <ReturnLink app="gateway-suite-lab" variant="header" />
+          </TopMenu>
+        )}
       </header>
       <main className="page" id="main" tabIndex={-1}>
-        {tab === "mcp"
-          ? <PersonalAgentTab source={source} />
-          : tab === "talk"
-            ? <TalkTrackTab />
-            : <EndToEndTab catalog={catalog} source={source} />}
+        <p className="banner" data-testid={loaded ? "banner" : undefined} role="note">{banner}</p>
+        {loaded && <ReturnLink app="gateway-suite-lab" />}
+        {!loaded
+          ? (loadError ? <p className="alert" role="alert">Could not reach the lab server: {loadError}</p> : <p className="muted" role="status">Loading the AI Gateway Suite LAB…</p>)
+          : tab === "mcp"
+            ? <PersonalAgentTab source={source} />
+            : tab === "talk"
+              ? <TalkTrackTab />
+              : <EndToEndTab catalog={catalog} source={source} />}
       </main>
       <footer><p className="muted small">{source === "real" ? "Real mode: chat is relayed to the configured central agent." : "Mock mode: every agent, gateway, tool and answer is simulated in-process."}</p></footer>
       <div aria-live="polite" className="visually-hidden">{announce}</div>

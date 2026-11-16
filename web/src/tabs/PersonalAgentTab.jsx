@@ -94,6 +94,7 @@ function ToolForm({ tool, onResult }) {
           )}
         </label>
       ))}
+      {/* ui-pattern: allow P9 Run tool renders only once a tool is picked from a connected server, and Connect is primary only while disconnected, so one primary shows at a time */}
       <button type="submit" className="btn primary" disabled={busy}>Run tool</button>
       {error && <p className="alert" role="alert">{error}</p>}
     </form>
@@ -149,7 +150,8 @@ export default function PersonalAgentTab({ source }) {
         <label className="field-inline grow">MCP server URL
           <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://your-mcp-server.example/mcp" required data-testid="mcp-url" />
         </label>
-        <button type="submit" className="btn primary" disabled={busy} data-testid="mcp-connect">Connect</button>
+        {/* ui-pattern: allow P9 Connect is primary only while disconnected; Run tool (ToolForm) needs a connected server and a picked tool, so the two never show together */}
+        <button type="submit" className={state.connected ? "btn" : "btn primary"} disabled={busy} data-testid="mcp-connect">Connect</button>
         {state.connected && <button type="button" className="btn" onClick={disconnect} data-testid="mcp-disconnect">Disconnect</button>}
         <span className="chip" data-state={state.connected ? "ok" : "neutral"} data-testid="mcp-state">{state.connected ? `${state.tools.length} tools` : "Disconnected"}</span>
       </form>

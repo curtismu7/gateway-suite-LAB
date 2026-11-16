@@ -53,7 +53,9 @@ describe("return link", () => {
     const note = await screen.findByRole("note", NOTE);
     expect(note.textContent).toContain("UC-TOOL3");
     expect(screen.getByTestId("banner").nextElementSibling).toBe(note);
-    expect(document.querySelector(".shell-right > button.return-link--header")).not.toBeNull();
+    expect(document.querySelector("header.shell-bar .top-menu button.return-link--header")).not.toBeNull(); // header Back in the shell bar TopMenu
+    expect(document.querySelector("main").firstElementChild).toBe(screen.getByTestId("banner")); // shell bar first, then main with the banner first
+    expect(document.body.querySelector("header.shell-bar").compareDocumentPosition(document.querySelector("main")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.getAllByRole("button", { name: /Back to Customer Agent LAB/ })).toHaveLength(2);
   });
 
