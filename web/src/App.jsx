@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ShelfLink from "./components/ShelfLink.jsx";
+import VerifyMark from "./components/VerifyMark.jsx";
 import { getCatalog, getInfo, requestModeSwitch, resetServer } from "./lib/api.js";
 import TopMenu from "./top-menu/TopMenu.jsx";
 // Opened from Customer Agent LAB (UC-TOOL3 routes here): strip + header Back only. Nothing is preselected.
@@ -91,7 +92,9 @@ export default function App() {
               version={info?.version || null}
               onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
               talkTrack={{ active: tab === "talk", onToggle: () => { if (tab !== "talk") window.location.hash = "#/talk"; } }}
-            />
+            >
+              <VerifyMark id="gateway-suite-lab" />
+            </TopMenu>
           </div>
         </div>
         <nav aria-label="Tabs" className="tabs">
