@@ -2,7 +2,7 @@
    Tokens only here: no colour literals, no dark-mode media queries, breakpoints 600px and 900px only. */
 :root[data-present="1"] body { font-size: 20px; }
 /* Page frame (UI patterns section 3): one centred 1100px column; the simulation banner is its first child. */
-.page { max-width: 1100px; margin: 0 auto; padding: 0 0 32px; }
+.page { max-width: 2200px; margin: 0 auto; padding: 0 0 32px; }
 main:focus:not(:focus-visible) { outline: none; }
 h2 { margin: 8px 0 4px; font-size: 24px; }
 h3 { margin: 0 0 8px; font-size: 17px; }
