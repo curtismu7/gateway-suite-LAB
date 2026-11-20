@@ -4,7 +4,7 @@ import FloatingDialog from "../floating-dialog/FloatingDialog";
 import Json from "../components/JsonPane.jsx";
 
 // Keys that matter in this lab's access-governance payloads (JsonPane already stands out sub, aud, scope, error, note ...).
-export const HOT_KEYS = ["user", "role", "resource", "expiresAt", "lastUsed", "ticket", "redaction"];
+export const HOT_KEYS = ["role", "resource", "ticket"];
 
 function escapeHtml(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
