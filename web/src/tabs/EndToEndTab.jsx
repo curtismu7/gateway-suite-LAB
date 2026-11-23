@@ -3,6 +3,7 @@ import FlowDiagram from "../components/FlowDiagram.jsx";
 import { chatStream } from "../lib/api.js";
 import { humanToolResult, HOT_KEYS } from "./PersonalAgentTab.jsx";
 import Json from "../components/JsonPane.jsx";
+import useColResize from "../lib/useColResize.js";
 
 const FLOW_BY_KIND = {
   handoff: "path-delegate",
@@ -18,6 +19,8 @@ export default function EndToEndTab({ catalog, source }) {
   const [activePath, setActivePath] = useState("");
   const [blocked, setBlocked] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const gridRef = useRef(null);
+  const onHandleDown = useColResize(gridRef, "gws.e2e.cols");
   const [announce, setAnnounce] = useState("");
   const chatRef = useRef(null);
 
@@ -83,7 +86,7 @@ export default function EndToEndTab({ catalog, source }) {
         </span>
       </div>
 
-      <div className="e2e-grid">
+      <div className="e2e-grid" ref={gridRef}>
         <aside className="card" aria-label="Preset prompts">
           <h3>Preset prompts</h3>
           <label className="field-inline">Category
@@ -97,6 +100,8 @@ export default function EndToEndTab({ catalog, source }) {
             ))}
           </div>
         </aside>
+
+        <div className="col-handle" role="separator" aria-orientation="vertical" aria-label="Resize prompt list" data-side="left" onPointerDown={onHandleDown} />
 
         <section className="card" aria-label="Conversation" ref={chatRef}>
           <h3>Conversation</h3>
@@ -128,6 +133,7 @@ export default function EndToEndTab({ catalog, source }) {
           </form>
         </section>
 
+        <div className="col-handle" role="separator" aria-orientation="vertical" aria-label="Resize trace" data-side="right" onPointerDown={onHandleDown} />
         <aside className="card" aria-label="Request trace">
           <h3>Trace</h3>
           <div className="trace-list" data-testid="trace">

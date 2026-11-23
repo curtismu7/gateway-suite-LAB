@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mcpCall, mcpConnect, mcpDisconnect, mcpStatus } from "../lib/api.js";
 import FloatingDialog from "../floating-dialog/FloatingDialog";
 import Json from "../components/JsonPane.jsx";
+import useColResize from "../lib/useColResize.js";
 
 // Keys that matter in this lab's access-governance payloads (JsonPane already stands out sub, aud, scope, error, note ...).
 export const HOT_KEYS = ["user", "role", "resource", "expiresAt", "lastUsed", "ticket", "redaction"];
@@ -102,6 +103,8 @@ function ToolForm({ tool, onResult }) {
 }
 
 export default function PersonalAgentTab({ source }) {
+  const mcpGridRef = useRef(null);
+  const onMcpHandleDown = useColResize(mcpGridRef, "gws.mcp.cols");
   const [url, setUrl] = useState("");
   const [state, setState] = useState({ connected: false, tools: [], pendingOAuth: "" });
   const [selected, setSelected] = useState(null);
@@ -168,7 +171,7 @@ export default function PersonalAgentTab({ source }) {
         </div>
       </FloatingDialog>
 
-      <div className="mcp-grid">
+      <div className="mcp-grid" ref={mcpGridRef}>
         <aside className="card" aria-label="Discovered tools">
           <h3>Tools <span className="chip" data-testid="tool-count">{state.tools.length}</span></h3>
           <div className="tool-list">
@@ -182,6 +185,8 @@ export default function PersonalAgentTab({ source }) {
             ))}
           </div>
         </aside>
+
+        <div className="col-handle" role="separator" aria-orientation="vertical" aria-label="Resize tool list" data-side="left" onPointerDown={onMcpHandleDown} />
 
         <section className="card" aria-label="Tool detail">
           {!selected && <p className="muted">Select a discovered tool to inspect its inputs and run it.</p>}
