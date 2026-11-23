@@ -62,7 +62,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .flow-controls { display: flex; align-items: end; gap: 16px; margin: 8px 0 16px; flex-wrap: wrap; }
 
 .e2e-grid, .mcp-grid { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: start; }
-@media (min-width: 900px) { .e2e-grid { grid-template-columns: 280px 1fr 300px; } .mcp-grid { grid-template-columns: 280px 1fr; } }
+@media (min-width: 900px) {
+  .e2e-grid { grid-template-columns: var(--left-w, 280px) 6px minmax(0, 1fr) 6px var(--right-w, 300px); }
+  .mcp-grid { grid-template-columns: var(--left-w, 280px) 6px minmax(0, 1fr); }
+  .col-handle { width: 6px; min-height: 4rem; align-self: stretch; border-radius: 3px; background: var(--border); cursor: col-resize; touch-action: none; }
+  .col-handle:hover { background: var(--muted); }
+}
 .e2e-grid > *, .mcp-grid > * { min-width: 0; }
 
 .prompt-list { display: grid; gap: 6px; }
