@@ -95,8 +95,8 @@ export function respond(message) {
   if (/open a ticket/.test(m) && /erin walsh|flight-manifest-exports/.test(m)) {
     return { kind: 'tool', tool: 'open_ticket', result: { ticket: { id: 'MOCK-4172', title: 'Revoke Erin Walsh access to flight-manifest-exports', status: 'open', openedBy: 'mock-worker-agent' }, openTickets: 3, mock: 'MOCK' } };
   }
-  if (/who has access to flight-manifest-exports.*(no longer active|not active)/.test(m)) {
-    return { kind: 'tool', tool: 'access_on_resource', result: { resource: 'flight-manifest-exports', grants: grantsFor('erin.walsh').filter((g) => g.role === 'reader'), holders: 1, note: 'MOCK' } };
+  if (/(who has|does anyone have) access to flight-manifest-exports.*(no longer active|not active)/.test(m)) {
+    return { kind: 'tool', tool: 'access_on_resource', result: { resource: 'flight-manifest-exports', grants: grantsFor('erin.walsh').filter((g) => g.resource === 'flight-manifest-exports'), holders: 1, note: 'MOCK' } };
   }
   if (/list all access on fare-payments-api/.test(m)) {
     return { kind: 'tool', tool: 'access_on_resource', result: { resource: 'fare-payments-api', grants: [...grantsFor('erin.walsh').slice(0, 2), ...grantsFor('bob.reyes')], note: 'MOCK' } };

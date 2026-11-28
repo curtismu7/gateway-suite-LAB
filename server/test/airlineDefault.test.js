@@ -12,7 +12,7 @@ import { loadCustomerConfig } from '../src/customerConfig.js';
 import { createApp, PROMPT_CATEGORIES } from '../src/app.js';
 import { createHealth } from '../src/health.js';
 import { grantsFor, profile, respond } from '../src/mockAgent.js';
-import { MOCK_TOOLS } from '../src/mockMcpServer.js';
+import { MOCK_TOOLS, startMockMcpServer } from '../src/mockMcpServer.js';
 import { installNetguard } from '../src/netguard.js';
 
 installNetguard();
@@ -104,12 +104,11 @@ test('the mock world is Meridian Air: people, resources, roles and .example emai
 
 test('every preset prompt is understood by the mock responder (a renamed prompt that no longer matches falls to the generic reply), and no reply names an old brand or retired identifier', () => {
   const generic = respond('zzz').text;
-  // These four were answered generically before the swap too (checked against origin/main with the names mapped back): the
+  // These three were answered generically before the swap too (checked against origin/main with the names mapped back): the
   // responder matches user ids, not "Carol Nguyen", and its regex says "who has access" where the prompt says "Does anyone have".
   // Not part of this change; the other 16 presets must keep their answers.
   const ALREADY_GENERIC = new Set([
     'Does Carol Nguyen still need passenger-db-admin? Her grant expired in December.',
-    'Does anyone have access to flight-manifest-exports who is no longer active?',
     'List all entitlements for Erin Walsh',
     'List all entitlements for Carol Nguyen',
   ]);
@@ -123,6 +122,25 @@ test('every preset prompt is understood by the mock responder (a renamed prompt 
     }
   }
   for (const t of MOCK_TOOLS) assert.doesNotMatch(JSON.stringify(t), OTHER_BRANDS);
+});
+
+test('flight-manifest-exports: the responder and the MCP tool both return Erin\'s manifest-reader grant (a renamed role must not empty the answer)', async () => {
+  for (const q of ['Who has access to flight-manifest-exports who is no longer active?', 'Does anyone have access to flight-manifest-exports who is no longer active?']) {
+    const r = respond(q);
+    assert.equal(r.kind, 'tool', q);
+    assert.equal(r.tool, 'access_on_resource', q);
+    assert.ok(r.result.grants.length > 0, `no grants returned for: ${q}`);
+    assert.ok(r.result.grants.every((g) => g.resource === 'flight-manifest-exports' && g.role === 'manifest-reader'), q);
+  }
+  const { server, url } = await startMockMcpServer();
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'access_on_resource', arguments: { resource: 'flight-manifest-exports' } } }) });
+    const j = await res.json();
+    const text = j.result?.content?.[0]?.text;
+    const out = text ? JSON.parse(text) : j.result;
+    assert.ok(Array.isArray(out.grants) && out.grants.length > 0, 'the MCP tool returned no grants for flight-manifest-exports');
+    assert.ok(out.grants.every((g) => g.role === 'manifest-reader'));
+  } finally { server.close(); }
 });
 
 test('a person who is not seeded gets no grants and an Unassigned profile (nothing invented)', () => {

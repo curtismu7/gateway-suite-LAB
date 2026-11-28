@@ -75,7 +75,7 @@ const TOOL_IMPL = {
   access_on_resource: (args) => {
     const resource = String(args.resource || '');
     if (!/^[a-z0-9-]+$/.test(resource)) return { error: 'Unknown resource. Try passenger-records-db or fare-payments-api.', knownResources: ['passenger-records-db', 'fare-payments-api', 'flight-manifest-exports'], mock: 'MOCK' };
-    const all = { 'passenger-records-db': [...grantsFor('alice.chen'), ...grantsFor('carol.nguyen'), ...grantsFor('dave.okoro')], 'fare-payments-api': [...grantsFor('erin.walsh').slice(0, 2), ...grantsFor('bob.reyes')], 'flight-manifest-exports': grantsFor('erin.walsh').filter((g) => g.role === 'reader') };
+    const all = { 'passenger-records-db': [...grantsFor('alice.chen'), ...grantsFor('carol.nguyen'), ...grantsFor('dave.okoro')], 'fare-payments-api': [...grantsFor('erin.walsh').slice(0, 2), ...grantsFor('bob.reyes')], 'flight-manifest-exports': grantsFor('erin.walsh').filter((g) => g.resource === 'flight-manifest-exports') };
     return { resource, grants: all[resource] || [], mock: 'MOCK' };
   },
   open_ticket: (args) => {
