@@ -24,7 +24,7 @@ lines.push('');
 lines.push('## Personal Agent');
 lines.push('');
 lines.push('1. In Mock mode the URL field pre-fills with the in-process mock MCP server (loopback). Connect: four tools are discovered.');
-lines.push('2. Run `who_has_role` with `prod-db-admin`; the human view shows holders with Active / Expired / Never-used tags.');
+lines.push('2. Run `who_has_role` with `passenger-db-admin`; the human view shows holders with Active / Expired / Never-used tags.');
 lines.push('3. Run `open_ticket` with a justification containing `rm -rf`: the tool refuses — MCP-side policy.');
 lines.push('4. In Real mode, paste a real MCP server URL; if it needs OAuth the dialog opens and the callback completes the flow.');
 lines.push('');

@@ -15,7 +15,7 @@ export const MOCK_TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        role: { type: 'string', description: 'Role name, e.g. prod-db-admin' },
+        role: { type: 'string', description: 'Role name, e.g. passenger-db-admin' },
       },
       required: ['role'],
     },
@@ -37,7 +37,7 @@ export const MOCK_TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        resource: { type: 'string', description: 'Resource id, e.g. prod-db-primary' },
+        resource: { type: 'string', description: 'Resource id, e.g. passenger-records-db' },
       },
       required: ['resource'],
     },
@@ -63,7 +63,7 @@ const TOOL_IMPL = {
     for (const [user, grants] of Object.entries({ 'alice.chen': grantsFor('alice.chen'), 'erin.walsh': grantsFor('erin.walsh'), 'carol.nguyen': grantsFor('carol.nguyen'), 'dave.okoro': grantsFor('dave.okoro'), 'bob.reyes': grantsFor('bob.reyes') })) {
       for (const g of grants) if (g.role === role) holders.push({ user: profile(user), role: g.role, resource: g.resource, grantedAt: g.grantedAt, grantedBy: g.grantedBy, expiresAt: g.expiresAt, lastUsed: g.lastUsed, mock: 'MOCK' });
     }
-    return { role, holders, knownRoles: ['prod-db-admin', 'prod-db-reader', 'break-glass', 'deployer', 'reader'], mock: 'MOCK' };
+    return { role, holders, knownRoles: ['passenger-db-admin', 'passenger-db-reader', 'break-glass', 'payments-deployer', 'manifest-reader'], mock: 'MOCK' };
   },
   list_entitlements: (args) => {
     const user = String(args.user || '').toLowerCase();
@@ -74,8 +74,8 @@ const TOOL_IMPL = {
   },
   access_on_resource: (args) => {
     const resource = String(args.resource || '');
-    if (!/^[a-z0-9-]+$/.test(resource)) return { error: 'Unknown resource. Try prod-db-primary or payments-api.', knownResources: ['prod-db-primary', 'payments-api', 's3-customer-exports'], mock: 'MOCK' };
-    const all = { 'prod-db-primary': [...grantsFor('alice.chen'), ...grantsFor('carol.nguyen'), ...grantsFor('dave.okoro')], 'payments-api': [...grantsFor('erin.walsh').slice(0, 2), ...grantsFor('bob.reyes')], 's3-customer-exports': grantsFor('erin.walsh').filter((g) => g.role === 'reader') };
+    if (!/^[a-z0-9-]+$/.test(resource)) return { error: 'Unknown resource. Try passenger-records-db or fare-payments-api.', knownResources: ['passenger-records-db', 'fare-payments-api', 'flight-manifest-exports'], mock: 'MOCK' };
+    const all = { 'passenger-records-db': [...grantsFor('alice.chen'), ...grantsFor('carol.nguyen'), ...grantsFor('dave.okoro')], 'fare-payments-api': [...grantsFor('erin.walsh').slice(0, 2), ...grantsFor('bob.reyes')], 'flight-manifest-exports': grantsFor('erin.walsh').filter((g) => g.resource === 'flight-manifest-exports') };
     return { resource, grants: all[resource] || [], mock: 'MOCK' };
   },
   open_ticket: (args) => {

@@ -166,14 +166,14 @@ test("personal agent tab: connect lists tools and renders a parameter form from 
   expect(await screen.findByTestId("tool-form")).toBeTruthy();
   expect(screen.getByTestId("tool-title").textContent).toBe("who_has_role");
   expect(screen.getByTestId("tool-form").textContent).toContain("role");
-  vi.mocked(mcpCall).mockResolvedValueOnce({ result: { structuredContent: { role: "prod-db-admin", holders: [{ role: "prod-db-admin", resource: "prod-db-primary", grantedAt: "2026-01-12", grantedBy: "jane.lee", lastUsed: "2026-10-30" }] } } });
-  await user.type(screen.getByTestId("tool-form").querySelector("input"), "prod-db-admin");
+  vi.mocked(mcpCall).mockResolvedValueOnce({ result: { structuredContent: { role: "passenger-db-admin", holders: [{ role: "passenger-db-admin", resource: "passenger-records-db", grantedAt: "2026-01-12", grantedBy: "dana.olsen", lastUsed: "2026-10-30" }] } } });
+  await user.type(screen.getByTestId("tool-form").querySelector("input"), "passenger-db-admin");
   await user.click(screen.getByTestId("tool-form").querySelector('button[type="submit"]'));
   await waitFor(() => expect(screen.getByTestId("tool-result").textContent).toContain("Active"));
   // The raw result goes through the shared JsonPane: Form first, the exact JSON text after the JSON button.
-  expect(screen.getByTestId("tool-result-json").textContent).toContain("prod-db-primary");
+  expect(screen.getByTestId("tool-result-json").textContent).toContain("passenger-records-db");
   await user.click(screen.getByTestId("tool-result-json-raw"));
-  expect(screen.getByTestId("tool-result-json").textContent).toContain('"role": "prod-db-admin"');
+  expect(screen.getByTestId("tool-result-json").textContent).toContain('"role": "passenger-db-admin"');
 });
 
 test("grant rows render Expired / Never used / Active tags", async () => {
@@ -186,4 +186,17 @@ test("grant rows render Expired / Never used / Active tags", async () => {
   expect(html).toContain("Expired");
   expect(html).toContain("Never used");
   expect(html).toContain("Active");
+});
+
+test("default story: the empty conversation names Meridian Air (a fictional airline); no scenario in the catalog leaves just the plain prompt", async () => {
+  window.location.hash = "#/end-to-end"; // earlier tests leave another tab selected
+  vi.mocked(getCatalog).mockResolvedValueOnce({ ...CATALOG, scenario: { brand: "Meridian Air", summary: "an access review at Meridian Air, a fictional airline" } });
+  const { unmount } = render(<App />);
+  await screen.findByTestId("banner");
+  expect((await screen.findByTestId("chat-empty")).textContent).toMatch(/Meridian Air, a fictional airline/);
+  unmount();
+  render(<App />);
+  await screen.findByTestId("banner");
+  const plain = (await screen.findByTestId("chat-empty")).textContent;
+  expect(plain).toBe("Ask an end-to-end access question or choose a preset prompt.");
 });

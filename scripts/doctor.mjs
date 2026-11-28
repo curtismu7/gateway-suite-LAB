@@ -38,7 +38,7 @@ try {
     const mock = await startMockMcpServer();
     const conn = await fetch(`${base}/api/mcp/connect`, { method: 'POST', headers: h, body: JSON.stringify({ url: mock.url }) });
     const connJson = await conn.json();
-    const called = await fetch(`${base}/api/mcp/tools/call`, { method: 'POST', headers: h, body: JSON.stringify({ name: 'who_has_role', arguments: { role: 'prod-db-admin' } }) });
+    const called = await fetch(`${base}/api/mcp/tools/call`, { method: 'POST', headers: h, body: JSON.stringify({ name: 'who_has_role', arguments: { role: 'passenger-db-admin' } }) });
     const calledJson = await called.json();
     const ok = hj.schema === 'demo-health/1' && hj.state === 'ready'
       && realUp.status === 409 && /CENTRAL_AGENT_A2A_URL/.test(realReason)

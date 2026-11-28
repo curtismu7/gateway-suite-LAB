@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { verticalFrom } from './stories.js';
 
 const FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../data/customer.config.json');
 
@@ -12,5 +13,6 @@ export function loadCustomerConfig(file = FILE) {
   if (!raw.branding || typeof raw.branding.productName !== 'string') problems.push('branding.productName missing');
   if (!raw.vocabulary || typeof raw.vocabulary !== 'object') problems.push('vocabulary missing');
   if (problems.length) throw new Error(`customer.config: ${problems.join('; ')}`);
-  return raw;
+  // Optional `vertical`; unknown or missing falls back to the default (airlines).
+  return { ...raw, vertical: verticalFrom(raw.vertical) };
 }
