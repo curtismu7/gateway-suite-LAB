@@ -188,12 +188,12 @@ test("grant rows render Expired / Never used / Active tags", async () => {
   expect(html).toContain("Active");
 });
 
-test("default story: the empty conversation names Meridian Air (a fictional airline); no scenario in the catalog leaves just the plain prompt", async () => {
+test("default story: the empty conversation names AirGuard Airlines (a fictional airline); no scenario in the catalog leaves just the plain prompt", async () => {
   window.location.hash = "#/end-to-end"; // earlier tests leave another tab selected
-  vi.mocked(getCatalog).mockResolvedValueOnce({ ...CATALOG, scenario: { brand: "Meridian Air", summary: "an access review at Meridian Air, a fictional airline" } });
+  vi.mocked(getCatalog).mockResolvedValueOnce({ ...CATALOG, scenario: { brand: "AirGuard Airlines", summary: "an access review at AirGuard Airlines, a fictional airline" } });
   const { unmount } = render(<App />);
   await screen.findByTestId("banner");
-  expect((await screen.findByTestId("chat-empty")).textContent).toMatch(/Meridian Air, a fictional airline/);
+  expect((await screen.findByTestId("chat-empty")).textContent).toMatch(/AirGuard Airlines, a fictional airline/);
   unmount();
   render(<App />);
   await screen.findByTestId("banner");

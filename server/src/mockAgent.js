@@ -1,5 +1,5 @@
 // The deterministic mock scenario responder: the in-process "central agent" behind the Mock
-// A2A endpoint. The world is Meridian Air, a fictional airline (the same people, resources and roles as
+// A2A endpoint. The world is AirGuard Airlines, a fictional airline (the same people, resources and roles as
 // the A2A lab). Access-review prompts return mock entitlement/grant data (MOCK-labelled);
 // attack prompts are answered with an AI Guard block; PII prompts come back with
 // [REDACTED] fields and the redaction notice. No LLM, no network.
@@ -51,7 +51,7 @@ export function profile(user) {
   return {
     id: user,
     name: user.split('.').map((p) => p[0].toUpperCase() + p.slice(1)).join(' '),
-    email: /walsh/i.test(user) ? REDACT : `${user}@${CONTRACTORS.has(user) ? 'contractor.' : ''}meridianair.example`,
+    email: /walsh/i.test(user) ? REDACT : `${user}@${CONTRACTORS.has(user) ? 'contractor.' : ''}airguard.example`,
     department: PEOPLE[user]?.department ?? 'Unassigned',
     employmentType: CONTRACTORS.has(user) ? 'contractor' : 'employee',
     status: OFFBOARDING.has(user) ? 'offboarding' : 'active',

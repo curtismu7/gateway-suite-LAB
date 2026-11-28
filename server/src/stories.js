@@ -1,5 +1,5 @@
 // Demo stories (rule 10): data with {{cast:<id>}} tokens across four vertical packs (rule 10 amended 2026-11-28:
-// finance, healthcare, retail, airlines). The default is airlines: Meridian Air, a fictional airline.
+// finance, healthcare, retail, airlines). The default is airlines: AirGuard Airlines, a fictional airline.
 // A token must resolve against the cast below; a test fails on any undefined token.
 export const CAST = {
   analyst: { label: 'Sam the analyst', role: 'runs the access review' },
@@ -7,7 +7,7 @@ export const CAST = {
   worker: { label: 'Iris the worker agent', role: 'the Worker Agent that calls tools' },
   guard: { label: 'the AI Guard', role: 'stops hostile prompts at the gateway' },
   auditor: { label: 'Noor the auditor', role: 'asks for the evidence trail' },
-  brand: { label: 'Meridian Air', role: 'the fictional airline the default scenario is about' },
+  brand: { label: 'AirGuard Airlines', role: 'the fictional airline the default scenario is about' },
 };
 
 export const VERTICALS = ['airlines', 'finance', 'healthcare', 'retail'];
@@ -17,7 +17,7 @@ export const verticalFrom = (id) => (VERTICALS.includes(id) ? id : DEFAULT_VERTI
 
 // What the page says about the default scenario; other verticals carry no brand of their own in this lab.
 export const SCENARIOS = {
-  airlines: { brand: 'Meridian Air', summary: 'an access review at Meridian Air, a fictional airline' },
+  airlines: { brand: 'AirGuard Airlines', summary: 'an access review at AirGuard Airlines, a fictional airline' },
 };
 
 export const STORIES = [

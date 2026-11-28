@@ -1,4 +1,4 @@
-// The default story is Meridian Air, a fictional airline (fleet spec 2026-11-28). The mock world is the same one
+// The default story is AirGuard Airlines, a fictional airline (fleet spec 2026-11-28). The mock world is the same one
 // the A2A lab uses; the vertical packs are airlines (default), finance, healthcare, retail.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,7 +22,7 @@ const PEOPLE = ['dana.olsen', 'alice.chen', 'bob.reyes', 'carol.nguyen', 'dave.o
 
 // Brand strings of the other packs, and the cloud-estate world this lab had before the swap.
 const OTHER_BRANDS = /fabrikam|northwind|contoso|harbor|vellum/i;
-const RETIRED = [/prod-db/, /(?<![a-z-])payments-api/, /s3-customer-exports/, /jenkins-ci/, /exports-reader/, /ci-admin/, /jane\.lee|marcus\.hale|sam\.patel|Marcus Hale/, /@example\.invalid/];
+const RETIRED = [/Meridian Air|meridianair/, /prod-db/, /(?<![a-z-])payments-api/, /s3-customer-exports/, /jenkins-ci/, /exports-reader/, /ci-admin/, /jane\.lee|marcus\.hale|sam\.patel|Marcus Hale/, /@example\.invalid/];
 
 test('the default vertical is airlines; four packs, each with a story; unknown ids fall back to the default', () => {
   assert.equal(DEFAULT_VERTICAL, 'airlines');
@@ -32,8 +32,8 @@ test('the default vertical is airlines; four packs, each with a story; unknown i
   assert.equal(STORIES[0].vertical, 'airlines', 'the first story shown is the airline one');
   for (const bad of [undefined, null, '', 'nope', '__proto__', 'Airlines']) assert.equal(verticalFrom(bad), 'airlines', String(bad));
   for (const v of ['finance', 'healthcare', 'retail']) assert.equal(verticalFrom(v), v, `${v} still selectable`);
-  assert.equal(SCENARIOS.airlines.brand, 'Meridian Air');
-  assert.equal(CAST.brand.label, 'Meridian Air');
+  assert.equal(SCENARIOS.airlines.brand, 'AirGuard Airlines');
+  assert.equal(CAST.brand.label, 'AirGuard Airlines');
 });
 
 test('customer.config: the shipped file says airlines; a saved finance/retail config keeps working; an unknown one falls back', () => {
@@ -64,7 +64,7 @@ test('undefined-token test covers the airlines pack: every airline story resolve
   assert.equal(new Set(ids).size, ids.length, 'story ids are unique');
 });
 
-test('the airline run shows Meridian Air: catalog default, scenario, first story', async () => {
+test('the airline run shows AirGuard Airlines: catalog default, scenario, first story', async () => {
   const server = http.createServer(createApp({ health: createHealth({ intervalMs: 3_600_000 }) }));
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const port = server.address().port;
@@ -72,7 +72,7 @@ test('the airline run shows Meridian Air: catalog default, scenario, first story
     const res = await fetch(`http://127.0.0.1:${port}/api/catalog`, { headers: { host: `localhost:${port}` } });
     const cat = await res.json();
     assert.equal(cat.customer.vertical, 'airlines');
-    assert.equal(cat.scenario.brand, 'Meridian Air');
+    assert.equal(cat.scenario.brand, 'AirGuard Airlines');
     assert.match(cat.scenario.summary, /fictional airline/);
     assert.equal(cat.stories[0].vertical, 'airlines');
     assert.deepEqual(cat.verticals, VERTICALS);
@@ -83,12 +83,12 @@ test('the airline run shows Meridian Air: catalog default, scenario, first story
   } finally { await new Promise((r) => server.close(r)); }
 });
 
-test('the mock world is Meridian Air: people, resources, roles and .example emails; every grant is internally consistent', () => {
+test('the mock world is AirGuard Airlines: people, resources, roles and .example emails; every grant is internally consistent', () => {
   const resources = new Set(['passenger-records-db', 'fare-payments-api', 'flight-manifest-exports']);
   const roles = new Set(['passenger-db-admin', 'passenger-db-reader', 'break-glass', 'payments-deployer', 'manifest-reader']);
   for (const id of PEOPLE) {
     const p = profile(id);
-    assert.match(p.email, /^(\[REDACTED\]|[a-z.]+@(contractor\.)?meridianair\.example)$/, id);
+    assert.match(p.email, /^(\[REDACTED\]|[a-z.]+@(contractor\.)?airguard\.example)$/, id);
     assert.notEqual(p.department, 'Engineering');
     if (p.manager) assert.ok(PEOPLE.includes(p.manager), `${id}'s manager exists`);
     for (const g of grantsFor(id)) {
