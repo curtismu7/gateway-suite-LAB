@@ -11,6 +11,8 @@ node ~/Development/demo-kit-base/scripts/conformance.mjs . --new --tier=Demo
 
 ## The rules that bite
 
+- **Default story = Meridian Air (fictional airline)**: mock world in `server/src/mockAgent.js` (alice.chen, carol.nguyen, erin.walsh, ...; passenger-records-db, fare-payments-api, flight-manifest-exports; `@meridianair.example`). Four story packs in `server/src/stories.js` (`airlines` default, finance, healthcare, retail); `DEFAULT_VERTICAL` and the `vertical` in `customer.config.json`. `server/test/airlineDefault.test.js` guards it. Regenerate `docs/talk-track.md` with `npm run talk-track`, never by hand.
+
 - **Mock/Real toggle (rule 19)**: `POST /api/mode` exactly `{"source":"mock"|"real"}`; Real unconfigured → 409 + how-to (`CENTRAL_AGENT_A2A_URL` in `~/Development/.env`). Default Real if configured else Mock. Never mention Chinese content or real tenant identifiers.
 - **Loopback only**: bind 127.0.0.1 unless `GWS_BIND`; Host check + same-origin writes; compose publishes `127.0.0.1:` only (pinned by a test).
 - **Netguard**: Mock mode = zero non-loopback outbound (test asserts it). Real mode allows ONLY the configured central agent / trace hosts plus loopback.

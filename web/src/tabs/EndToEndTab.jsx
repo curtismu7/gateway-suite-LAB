@@ -106,7 +106,7 @@ export default function EndToEndTab({ catalog, source }) {
         <section className="card" aria-label="Conversation" ref={chatRef}>
           <h3>Conversation</h3>
           <div className="chat-messages" data-testid="chat">
-            {!answer.text && !answer.html && !answer.blocked && !answer.error && <p className="muted">Ask an end-to-end access question or choose a preset prompt.</p>}
+            {!answer.text && !answer.html && !answer.blocked && !answer.error && <p className="muted" data-testid="chat-empty">{catalog?.scenario ? `The scenario is ${catalog.scenario.summary}. ` : ""}Ask an end-to-end access question or choose a preset prompt.</p>}
             {answer.blocked && <p className="alert" role="alert" data-testid="blocked">Blocked by AI Guard: {answer.blocked}</p>}
             {answer.error && <p className="alert" role="alert" data-testid="chat-error">{answer.error}</p>}
             {answer.html

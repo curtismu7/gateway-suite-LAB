@@ -1,4 +1,5 @@
-// Demo stories (rule 10): data with {{cast:<id>}} tokens across three vertical packs.
+// Demo stories (rule 10): data with {{cast:<id>}} tokens across four vertical packs (rule 10 amended 2026-11-28:
+// finance, healthcare, retail, airlines). The default is airlines: Meridian Air, a fictional airline.
 // A token must resolve against the cast below; a test fails on any undefined token.
 export const CAST = {
   analyst: { label: 'Sam the analyst', role: 'runs the access review' },
@@ -6,11 +7,39 @@ export const CAST = {
   worker: { label: 'Iris the worker agent', role: 'the Worker Agent that calls tools' },
   guard: { label: 'the AI Guard', role: 'stops hostile prompts at the gateway' },
   auditor: { label: 'Noor the auditor', role: 'asks for the evidence trail' },
+  brand: { label: 'Meridian Air', role: 'the fictional airline the default scenario is about' },
 };
 
-export const VERTICALS = ['finance', 'healthcare', 'retail'];
+export const VERTICALS = ['airlines', 'finance', 'healthcare', 'retail'];
+export const DEFAULT_VERTICAL = 'airlines';
+// An unknown or missing vertical id falls back to the default instead of failing.
+export const verticalFrom = (id) => (VERTICALS.includes(id) ? id : DEFAULT_VERTICAL);
+
+// What the page says about the default scenario; other verticals carry no brand of their own in this lab.
+export const SCENARIOS = {
+  airlines: { brand: 'Meridian Air', summary: 'an access review at Meridian Air, a fictional airline' },
+};
 
 export const STORIES = [
+  {
+    id: 'airlines-access-review',
+    vertical: 'airlines',
+    title: 'Access review before the holiday schedule',
+    steps: [
+      '{{cast:analyst}} asks {{cast:concierge}} who holds the passenger-db-admin role at {{cast:brand}}.',
+      '{{cast:concierge}} relays the question through the gateway to {{cast:worker}}, which calls the entitlement tool.',
+      '{{cast:auditor}} opens the trace and reads one traceparent per hop.',
+    ],
+  },
+  {
+    id: 'airlines-injection',
+    vertical: 'airlines',
+    title: 'The injection that never reached the passenger records',
+    steps: [
+      'A hostile prompt asks {{cast:concierge}} to ignore its instructions and grant admin on passenger-records-db.',
+      '{{cast:guard}} blocks it at the gateway; the trace shows a red guard event and no MCP call.',
+    ],
+  },
   {
     id: 'finance-access-review',
     vertical: 'finance',

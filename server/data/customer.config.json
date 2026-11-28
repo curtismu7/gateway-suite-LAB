@@ -3,6 +3,7 @@
     "productName": "AI Gateway Suite LAB",
     "accentNote": "Ping red tokens come from the shared stylesheet; this file may only rename things."
   },
+  "vertical": "airlines",
   "vocabulary": {
     "mainAgent": "Main Agent",
     "workerAgent": "Worker Agent",
