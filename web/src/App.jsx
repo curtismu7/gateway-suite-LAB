@@ -3,6 +3,8 @@ import ShelfLink from "./components/ShelfLink.jsx";
 import VerifyMark from "./components/VerifyMark.jsx";
 import { getCatalog, getInfo, requestModeSwitch, resetServer } from "./lib/api.js";
 import TopMenu from "./top-menu/TopMenu.jsx";
+import HelpDialog from "./help-dialog/HelpDialog.jsx";
+import { HELP_SECTIONS } from "./helpContent";
 // Opened from Customer Agent LAB (UC-TOOL3 routes here): strip + header Back only. Nothing is preselected.
 import ReturnLink from "./return-link/ReturnLink.jsx";
 import EndToEndTab from "./tabs/EndToEndTab.jsx";
@@ -21,6 +23,7 @@ export default function App() {
   const [info, setInfo] = useState(null);
   const [loadError, setLoadError] = useState(null);
   const [tab, setTab] = useState(tabFromHash);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [theme, setThemeState] = useState(() => (["light", "dark"].includes(read("gws.theme", "")) ? read("gws.theme", "") : "system"));
   const setTheme = (t) => { write("gws.theme", t === "system" ? "" : t); setThemeState(t); };
   const [present, setPresent] = useState(() => read("gws.present", "0") === "1");
@@ -81,7 +84,7 @@ export default function App() {
             mode={{ value: source === "real" ? "real" : "mock", onChange: onMode, realAvailable: info ? info.realAvailable === true : null, realHint: info?.realReason }}
             theme={{ value: theme === "system" ? "auto" : theme, onChange: setTheme }}
             present={{ active: present, onToggle: () => setPresent((v) => { write("gws.present", v ? "0" : "1"); return !v; }), label: "Present" }}
-            help={{ href: "https://github.com/curtismu7/gateway-suite-LAB#readme" }}
+            help={{ onClick: () => setHelpOpen(true), title: "What this lab is, and what is simulated" }}
             version={info?.version || null}
             onReset={async () => { await resetServer(); setCatalog(await getCatalog()); setAnnounce("Server state reset."); }}
             talkTrack={{ active: tab === "talk", onToggle: () => { if (tab !== "talk") window.location.hash = "#/talk"; } }}
@@ -103,6 +106,7 @@ export default function App() {
               ? <TalkTrackTab />
               : <EndToEndTab catalog={catalog} source={source} />}
       </main>
+      <HelpDialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} sections={HELP_SECTIONS} docsUrl="https://github.com/curtismu7/gateway-suite-LAB#readme" />
       <footer><p className="muted small">{source === "real" ? "Real mode: chat is relayed to the configured central agent." : "Mock mode: every agent, gateway, tool and answer is simulated in-process."}</p></footer>
       <div aria-live="polite" className="visually-hidden">{announce}</div>
     </>
